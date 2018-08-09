@@ -1,0 +1,37 @@
+
+type XAttribute {
+  id: ID!
+  name: String!
+  value: String!
+}
+
+type XElement {
+  id: ID!
+  name: String!
+  attributes(search: String): [XAttribute]!
+  attribute(name: String!): XAttribute
+
+  elements(search: String): [XElement]!
+  element(name: String!): [XElement]!
+}
+
+type XDocument {
+  id: ID!
+  name: String!
+  attributes(search: String): [XAttribute]!
+  attribute(name: String!): XAttribute
+
+  elements: [XElement]!
+  element(name: String): XElement!
+}
+
+type Query {
+  documents(search: String): [XDocument!]!
+  document(id: ID): XDocument!
+
+  element(id: ID): XElement
+}
+
+type Mutation {
+  document(name: String! body: String!): XDocument!
+}

@@ -1,0 +1,22 @@
+
+type XAttribute {
+  id: ID! @unique
+  name: String!
+  value: String!
+}
+
+
+type XElement {
+  id: ID! @unique
+  name: String!
+  attributes: [XAttribute!]!
+  elements: [XElement!]!
+}
+
+
+type XDocument {
+  id: ID! @unique
+  name: String!
+  attributes: [XAttribute!]!
+  elements: [XElement!]!
+}

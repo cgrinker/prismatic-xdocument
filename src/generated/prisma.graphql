@@ -1,0 +1,774 @@
+# source: http://localhost:4466
+# timestamp: Wed Aug 08 2018 22:46:02 GMT-0700 (PDT)
+
+type AggregateXAttribute {
+  count: Int!
+}
+
+type AggregateXDocument {
+  count: Int!
+}
+
+type AggregateXElement {
+  count: Int!
+}
+
+type BatchPayload {
+  """The number of nodes that have been affected by the Batch operation."""
+  count: Long!
+}
+
+"""
+The `Long` scalar type represents non-fractional signed whole numeric values.
+Long can represent values between -(2^63) and 2^63 - 1.
+"""
+scalar Long
+
+type Mutation {
+  createXDocument(data: XDocumentCreateInput!): XDocument!
+  createXAttribute(data: XAttributeCreateInput!): XAttribute!
+  createXElement(data: XElementCreateInput!): XElement!
+  updateXDocument(data: XDocumentUpdateInput!, where: XDocumentWhereUniqueInput!): XDocument
+  updateXAttribute(data: XAttributeUpdateInput!, where: XAttributeWhereUniqueInput!): XAttribute
+  updateXElement(data: XElementUpdateInput!, where: XElementWhereUniqueInput!): XElement
+  deleteXDocument(where: XDocumentWhereUniqueInput!): XDocument
+  deleteXAttribute(where: XAttributeWhereUniqueInput!): XAttribute
+  deleteXElement(where: XElementWhereUniqueInput!): XElement
+  upsertXDocument(where: XDocumentWhereUniqueInput!, create: XDocumentCreateInput!, update: XDocumentUpdateInput!): XDocument!
+  upsertXAttribute(where: XAttributeWhereUniqueInput!, create: XAttributeCreateInput!, update: XAttributeUpdateInput!): XAttribute!
+  upsertXElement(where: XElementWhereUniqueInput!, create: XElementCreateInput!, update: XElementUpdateInput!): XElement!
+  updateManyXDocuments(data: XDocumentUpdateInput!, where: XDocumentWhereInput): BatchPayload!
+  updateManyXAttributes(data: XAttributeUpdateInput!, where: XAttributeWhereInput): BatchPayload!
+  updateManyXElements(data: XElementUpdateInput!, where: XElementWhereInput): BatchPayload!
+  deleteManyXDocuments(where: XDocumentWhereInput): BatchPayload!
+  deleteManyXAttributes(where: XAttributeWhereInput): BatchPayload!
+  deleteManyXElements(where: XElementWhereInput): BatchPayload!
+}
+
+enum MutationType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+"""An object with an ID"""
+interface Node {
+  """The id of the object."""
+  id: ID!
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
+type Query {
+  xDocuments(where: XDocumentWhereInput, orderBy: XDocumentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [XDocument]!
+  xAttributes(where: XAttributeWhereInput, orderBy: XAttributeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [XAttribute]!
+  xElements(where: XElementWhereInput, orderBy: XElementOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [XElement]!
+  xDocument(where: XDocumentWhereUniqueInput!): XDocument
+  xAttribute(where: XAttributeWhereUniqueInput!): XAttribute
+  xElement(where: XElementWhereUniqueInput!): XElement
+  xDocumentsConnection(where: XDocumentWhereInput, orderBy: XDocumentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): XDocumentConnection!
+  xAttributesConnection(where: XAttributeWhereInput, orderBy: XAttributeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): XAttributeConnection!
+  xElementsConnection(where: XElementWhereInput, orderBy: XElementOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): XElementConnection!
+
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+}
+
+type Subscription {
+  xDocument(where: XDocumentSubscriptionWhereInput): XDocumentSubscriptionPayload
+  xAttribute(where: XAttributeSubscriptionWhereInput): XAttributeSubscriptionPayload
+  xElement(where: XElementSubscriptionWhereInput): XElementSubscriptionPayload
+}
+
+type XAttribute implements Node {
+  id: ID!
+  name: String!
+  value: String!
+}
+
+"""A connection to a list of items."""
+type XAttributeConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [XAttributeEdge]!
+  aggregate: AggregateXAttribute!
+}
+
+input XAttributeCreateInput {
+  name: String!
+  value: String!
+}
+
+input XAttributeCreateManyInput {
+  create: [XAttributeCreateInput!]
+  connect: [XAttributeWhereUniqueInput!]
+}
+
+"""An edge in a connection."""
+type XAttributeEdge {
+  """The item at the end of the edge."""
+  node: XAttribute!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum XAttributeOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  value_ASC
+  value_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type XAttributePreviousValues {
+  id: ID!
+  name: String!
+  value: String!
+}
+
+type XAttributeSubscriptionPayload {
+  mutation: MutationType!
+  node: XAttribute
+  updatedFields: [String!]
+  previousValues: XAttributePreviousValues
+}
+
+input XAttributeSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [XAttributeSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [XAttributeSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [XAttributeSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: XAttributeWhereInput
+}
+
+input XAttributeUpdateDataInput {
+  name: String
+  value: String
+}
+
+input XAttributeUpdateInput {
+  name: String
+  value: String
+}
+
+input XAttributeUpdateManyInput {
+  create: [XAttributeCreateInput!]
+  connect: [XAttributeWhereUniqueInput!]
+  disconnect: [XAttributeWhereUniqueInput!]
+  delete: [XAttributeWhereUniqueInput!]
+  update: [XAttributeUpdateWithWhereUniqueNestedInput!]
+  upsert: [XAttributeUpsertWithWhereUniqueNestedInput!]
+}
+
+input XAttributeUpdateWithWhereUniqueNestedInput {
+  where: XAttributeWhereUniqueInput!
+  data: XAttributeUpdateDataInput!
+}
+
+input XAttributeUpsertWithWhereUniqueNestedInput {
+  where: XAttributeWhereUniqueInput!
+  update: XAttributeUpdateDataInput!
+  create: XAttributeCreateInput!
+}
+
+input XAttributeWhereInput {
+  """Logical AND on all given filters."""
+  AND: [XAttributeWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [XAttributeWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [XAttributeWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  value: String
+
+  """All values that are not equal to given value."""
+  value_not: String
+
+  """All values that are contained in given list."""
+  value_in: [String!]
+
+  """All values that are not contained in given list."""
+  value_not_in: [String!]
+
+  """All values less than the given value."""
+  value_lt: String
+
+  """All values less than or equal the given value."""
+  value_lte: String
+
+  """All values greater than the given value."""
+  value_gt: String
+
+  """All values greater than or equal the given value."""
+  value_gte: String
+
+  """All values containing the given string."""
+  value_contains: String
+
+  """All values not containing the given string."""
+  value_not_contains: String
+
+  """All values starting with the given string."""
+  value_starts_with: String
+
+  """All values not starting with the given string."""
+  value_not_starts_with: String
+
+  """All values ending with the given string."""
+  value_ends_with: String
+
+  """All values not ending with the given string."""
+  value_not_ends_with: String
+}
+
+input XAttributeWhereUniqueInput {
+  id: ID
+}
+
+type XDocument implements Node {
+  id: ID!
+  name: String!
+  attributes(where: XAttributeWhereInput, orderBy: XAttributeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [XAttribute!]
+  elements(where: XElementWhereInput, orderBy: XElementOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [XElement!]
+}
+
+"""A connection to a list of items."""
+type XDocumentConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [XDocumentEdge]!
+  aggregate: AggregateXDocument!
+}
+
+input XDocumentCreateInput {
+  name: String!
+  attributes: XAttributeCreateManyInput
+  elements: XElementCreateManyInput
+}
+
+"""An edge in a connection."""
+type XDocumentEdge {
+  """The item at the end of the edge."""
+  node: XDocument!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum XDocumentOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type XDocumentPreviousValues {
+  id: ID!
+  name: String!
+}
+
+type XDocumentSubscriptionPayload {
+  mutation: MutationType!
+  node: XDocument
+  updatedFields: [String!]
+  previousValues: XDocumentPreviousValues
+}
+
+input XDocumentSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [XDocumentSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [XDocumentSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [XDocumentSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: XDocumentWhereInput
+}
+
+input XDocumentUpdateInput {
+  name: String
+  attributes: XAttributeUpdateManyInput
+  elements: XElementUpdateManyInput
+}
+
+input XDocumentWhereInput {
+  """Logical AND on all given filters."""
+  AND: [XDocumentWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [XDocumentWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [XDocumentWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  attributes_every: XAttributeWhereInput
+  attributes_some: XAttributeWhereInput
+  attributes_none: XAttributeWhereInput
+  elements_every: XElementWhereInput
+  elements_some: XElementWhereInput
+  elements_none: XElementWhereInput
+}
+
+input XDocumentWhereUniqueInput {
+  id: ID
+}
+
+type XElement implements Node {
+  id: ID!
+  name: String!
+  attributes(where: XAttributeWhereInput, orderBy: XAttributeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [XAttribute!]
+  elements(where: XElementWhereInput, orderBy: XElementOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [XElement!]
+}
+
+"""A connection to a list of items."""
+type XElementConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [XElementEdge]!
+  aggregate: AggregateXElement!
+}
+
+input XElementCreateInput {
+  name: String!
+  attributes: XAttributeCreateManyInput
+  elements: XElementCreateManyInput
+}
+
+input XElementCreateManyInput {
+  create: [XElementCreateInput!]
+  connect: [XElementWhereUniqueInput!]
+}
+
+"""An edge in a connection."""
+type XElementEdge {
+  """The item at the end of the edge."""
+  node: XElement!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum XElementOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type XElementPreviousValues {
+  id: ID!
+  name: String!
+}
+
+type XElementSubscriptionPayload {
+  mutation: MutationType!
+  node: XElement
+  updatedFields: [String!]
+  previousValues: XElementPreviousValues
+}
+
+input XElementSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [XElementSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [XElementSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [XElementSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: XElementWhereInput
+}
+
+input XElementUpdateDataInput {
+  name: String
+  attributes: XAttributeUpdateManyInput
+  elements: XElementUpdateManyInput
+}
+
+input XElementUpdateInput {
+  name: String
+  attributes: XAttributeUpdateManyInput
+  elements: XElementUpdateManyInput
+}
+
+input XElementUpdateManyInput {
+  create: [XElementCreateInput!]
+  connect: [XElementWhereUniqueInput!]
+  disconnect: [XElementWhereUniqueInput!]
+  delete: [XElementWhereUniqueInput!]
+  update: [XElementUpdateWithWhereUniqueNestedInput!]
+  upsert: [XElementUpsertWithWhereUniqueNestedInput!]
+}
+
+input XElementUpdateWithWhereUniqueNestedInput {
+  where: XElementWhereUniqueInput!
+  data: XElementUpdateDataInput!
+}
+
+input XElementUpsertWithWhereUniqueNestedInput {
+  where: XElementWhereUniqueInput!
+  update: XElementUpdateDataInput!
+  create: XElementCreateInput!
+}
+
+input XElementWhereInput {
+  """Logical AND on all given filters."""
+  AND: [XElementWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [XElementWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [XElementWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  attributes_every: XAttributeWhereInput
+  attributes_some: XAttributeWhereInput
+  attributes_none: XAttributeWhereInput
+  elements_every: XElementWhereInput
+  elements_some: XElementWhereInput
+  elements_none: XElementWhereInput
+}
+
+input XElementWhereUniqueInput {
+  id: ID
+}
