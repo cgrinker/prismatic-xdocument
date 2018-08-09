@@ -12,6 +12,30 @@ function attributesFor(e) {
   })
 }
 
+function matchAttr(e, matchAttribute) {
+  if(!matchAttribute) return true;
+
+  if(e.name === matchAttribute.name && !matchAttribute.value) return true;
+
+  else return e.value = matchAttribute.value;
+}
+
+function matchElement(e, name, matchAttribute) {
+  if(!name && !matchAttribute) return true;
+
+  if(name && e.name !== name) return false;
+
+  if(matchAttribute) {
+    if(e.attributes.find((k) => {
+      return matchAttr(k, matchAttribute)
+    })) return true;
+    else
+      return false;
+  }
+
+  return true
+}
+
 function elementFor(e) {
   return {
     name: e.name || e.text,
@@ -24,48 +48,48 @@ function elementFor(e) {
 
 const resolvers = {
   XElement: {
-    attributes(parent, {search}, ctx, info) {
+    attributes(parent, {matchAttribute}, ctx, info) {
       return (!parent.attributes) ? [] : parent.attributes.filter((e, i) => {
-          return e.name.match(search);
+          return matchAttr(e, matchAttribute)
         })
     },
-    attribute(parent, {name}, ctx, info) {
+    attribute(parent, {matchAttribute}, ctx, info) {
       return parent.attributes.filter((e, i) => {
-          return e.name.match(search);
+          return matchAttr(e, matchAttribute)
         })[0]
     },
 
-    elements(parent, {search}, context, info) {
+    elements(parent, {name, matchAttribute}, context, info) {
       return (!parent.elements) ? []: parent.elements.filter((e, i) => {
-          return e.name.match(search);
+          return matchElement(e, name, matchAttribute)
         })
     },
-    element(parent, {name}, context, info) {
+    element(parent, {name, matchAttribute}, context, info) {
       return parent.elements.filter((e, i) => {
-          return e.name.match(search);
+          return matchElement(e, name, matchAttribute)
         })[0]
     },
   },
   XDocument: {
-    attributes(parent, {search}, ctx, info) {
-      return parent.attributes.filter((e, i) => {
-          return e.name.match(search);
+    attributes(parent, {matchAttribute}, ctx, info) {
+      return (!parent.attributes) ? [] : parent.attributes.filter((e, i) => {
+          return matchAttr(e, matchAttribute)
         })
     },
-    attribute(parent, {name}, ctx, info) {
+    attribute(parent, {matchAttribute}, ctx, info) {
       return parent.attributes.filter((e, i) => {
-          return e.name.match(search);
+          return matchAttr(e, matchAttribute)
         })[0]
     },
 
-    elements(parent, {search}, ctx, info) {
+    elements(parent, {name, matchAttribute}, ctx, info) {
       return parent.elements.filter((e, i) => {
-          return e.name.match(search);
+          return matchElement(e, name, matchAttribute)
         })
     },
-    element(parent, {name}, ctx, info) {
+    element(parent, {name, matchAttribute}, ctx, info) {
       return parent.elements.filter((e, i) => {
-          return e.name.match(search);
+          return matchElement(e, name, matchAttribute)
         })[0]
     },
   },
@@ -78,19 +102,35 @@ const resolvers = {
         return ctx.db.query.xDocument({where: {id}}, info)
       }
     },
+    elements: (_, {name, matchAttribute}, ctx, info) => {
+      return ctx.db.query.xElements({where: {
+        name: name,
+        attributes_some: {
+          name: (matchAttribute) ? matchAttribute.name: undefined,
+          value: (matchAttribute) ?  matchAttribute.value: undefined
+        }
+      }}, info)
+    },
     element: (_, {id}, ctx, info) => {
       return ctx.db.query.xElement({where: {id}}, info)
     }
   },
   Mutation: {
     document: async (_, {name, body}, ctx, info) => {
+      let document_
+      try {
+       document_ = convert.xml2js(body, {compact: false, spaces: 4});
+      } catch (e) {
+        throw "Parse Error"
+      } finally {
 
-      const document_ = convert.xml2js(body, {compact: false, spaces: 4});
+      }
+
       const data = {
         data: {
           name,
           attributes: {
-            create: attributesFor(document_.declaration)
+            create: attributesFor(document_.declaration || {})
           },
           elements: {
             create: document_.elements.map((e, i) => {
@@ -99,7 +139,6 @@ const resolvers = {
           }
         }
       }
-      console.log(JSON.stringify(data, null, 2));
       return await ctx.db.mutation.createXDocument(data, info)
 
     },

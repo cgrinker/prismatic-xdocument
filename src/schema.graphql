@@ -1,3 +1,7 @@
+input AttributeMatch {
+  name: String!
+  value: String!
+}
 
 type XAttribute {
   id: ID!
@@ -8,27 +12,28 @@ type XAttribute {
 type XElement {
   id: ID!
   name: String!
-  attributes(search: String): [XAttribute]!
-  attribute(name: String!): XAttribute
+  attributes(matchAttribute: AttributeMatch): [XAttribute]!
+  attribute(matchAttribute: AttributeMatch): XAttribute
 
-  elements(search: String): [XElement]!
-  element(name: String!): [XElement]!
+  elements(name: String matchAttribute: AttributeMatch): [XElement]!
+  element(name: String matchAttribute: AttributeMatch): [XElement]!
 }
 
 type XDocument {
   id: ID!
   name: String!
-  attributes(search: String): [XAttribute]!
-  attribute(name: String!): XAttribute
+  attributes(matchAttribute: AttributeMatch): [XAttribute]!
+  attribute(matchAttribute: AttributeMatch!): XAttribute
 
-  elements: [XElement]!
-  element(name: String): XElement!
+  elements(name: String matchAttribute: AttributeMatch): [XElement]!
+  element(name: String matchAttribute: AttributeMatch): XElement!
 }
 
 type Query {
   documents(search: String): [XDocument!]!
   document(id: ID): XDocument!
 
+  elements(name: String matchAttribute: AttributeMatch): [XElement]!
   element(id: ID): XElement
 }
 
