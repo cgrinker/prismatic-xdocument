@@ -4,7 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "prod": "node src/index.js",
+    "deploy": "cd prisma && prisma deploy"
   },
   "dependencies": {
     "apollo-server": "^2.0.0",
