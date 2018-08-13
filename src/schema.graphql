@@ -1,3 +1,15 @@
+enum Quantifer {
+  DEFAULT
+  EXISTENTIAL
+  UNIVERSAL
+  NEXISTENTIAL
+  NUNIVERSAL
+
+}
+
+directive @backtrack(if: Quantifer) on FIELD|FIELD_DEFINITION
+
+
 input AttributeMatch {
   name: String!
   value: String!
@@ -12,10 +24,10 @@ type XAttribute {
 type XElement {
   id: ID!
   name: String!
-  attributes(matchAttribute: AttributeMatch): [XAttribute]!
+  attributes(matchAttribute: AttributeMatch backtrack: Quantifer): [XAttribute]!
   attribute(matchAttribute: AttributeMatch): XAttribute
 
-  elements(name: String matchAttribute: AttributeMatch): [XElement]!
+  elements(name: String matchAttribute: AttributeMatch backtrack: Quantifer): [XElement]!
   element(name: String matchAttribute: AttributeMatch): [XElement]!
 }
 
