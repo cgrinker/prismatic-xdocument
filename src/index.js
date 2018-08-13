@@ -1,13 +1,11 @@
 const { GraphQLServer } = require('graphql-yoga')
 const { Prisma } = require('prisma-binding')
 const resolvers = require('./resolvers');
-const schemaDirectives = require('./directives');
 const  formatResponse = require('./backtrack');
 
 const server = new GraphQLServer({
   typeDefs: 'src/schema.graphql',
   resolvers,
-  schemaDirectives,
   context: req => ({
     ...req,
     db: new Prisma({
