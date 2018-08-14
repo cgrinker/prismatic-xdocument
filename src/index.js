@@ -3,6 +3,7 @@ const { Prisma } = require('prisma-binding')
 const resolvers = require('./resolvers');
 const  formatResponse = require('./backtrack');
 
+console.log("This is the Prismatic-XDocument API server.")
 const server = new GraphQLServer({
   typeDefs: 'src/schema.graphql',
   resolvers,
@@ -18,4 +19,4 @@ const server = new GraphQLServer({
 })
 server.start({
   formatResponse,
-}, () => console.log(`GraphQL server is running on http://localhost:4000`))
+}, () => console.log(`GraphQL server is running on http://localhost:3999`))
