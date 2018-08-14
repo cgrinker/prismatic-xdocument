@@ -25,9 +25,16 @@ function recurse(parent, data, key) {
 
 module.exports = (res) => {
 
-    for(d in res.data.elements) {
-      recurse(res.data.elements, res.data.elements[d], d);
+    try
+    {
+      for(d in res.data.elements) {
+        recurse(res.data.elements, res.data.elements[d], d);
+      }
+      res.data.elements = res.data.elements.filter((e ) => {return e})
+      return res;
     }
-    res.data.elements = res.data.elements.filter((e ) => {return e})
-    return res;
+    catch(e) 
+    {
+      return res;
+    }
 }
